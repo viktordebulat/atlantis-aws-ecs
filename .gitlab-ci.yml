@@ -27,7 +27,7 @@ terraform-fmt-validate:
   before_script:
   - *terraform-ver-init
   tags:
-  - nafs-k8s-runner
+  - k8s-runner
   script:
   # Job will fail with exit code 3 if formatting changes are required
   - terraform fmt -list=true -write=false -diff=true -check=true -recursive
@@ -40,7 +40,7 @@ tflint:
   image:
     name: ghcr.io/terraform-linters/tflint
   tags:
-  - nafs-k8s-runner
+  - k8s-runner
   script:
   # install plugins from .tflint.hcl file first
   - tflint --init
@@ -57,7 +57,7 @@ checkov:
     - "/usr/bin/env"
     - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   tags:
-  - nafs-k8s-runner
+  - k8s-runner
   script:
   # Show only failed checks, download ext modules
   - checkov -d . --quiet --download-external-modules True
