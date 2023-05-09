@@ -36,6 +36,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "create_acm_cert" {
+  type        = bool
+  description = "Issue new ACM certificate for atlantis.* if true"
+  default     = true
+}
+
 ################################################################################
 # AWS VPC
 ################################################################################

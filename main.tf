@@ -77,3 +77,10 @@ data "aws_ec2_managed_prefix_list" "this" {
 data "aws_route53_zone" "this" {
   name = var.project.domain
 }
+
+data "aws_acm_certificate" "existing_certificate" {
+  count       = var.create_acm_cert ? 0 : 1
+  domain      = "*.${var.project.domain}"
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
