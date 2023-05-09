@@ -28,7 +28,7 @@ help:
 	  && echo "---" \
 	  && echo "You may use 'resource' option to limit operations (if supported by Terraform). Example: 'make destroy resource=aws_vpc.default'"
 
-init:
+init: # check-remote-state check-remote-lock
 	@cd "$(work_dir)" \
 	  && echo "Formatting:" \
 	  && terraform fmt \
@@ -36,13 +36,7 @@ init:
 	  && which tflint && tflint . \
 	  && terraform init
 
-# init: check-remote-state check-remote-lock
-# 	@cd "$(work_dir)" \
-# 	  && echo "Formatting:" \
-# 	  && terraform fmt \
-# 	  && echo "---" \
-# 	  && which tflint && tflint . \
-# 	  && terraform init --backend-config=backend.conf
+# Add this after migration --backend-config=backend.conf
 
 pull-tfvars-file:
 	$(info AWS Secret to pull from: "$(terraform_tfvars_secret)". You may change this value using "secret" option: "make pull-tfvars-file secret='aws-secret-id'")
@@ -73,7 +67,7 @@ show:
 	       terraform state show '$(resource)'; \
 	     fi
 
-plan: check-remote-state check-remote-lock
+plan: # check-remote-state check-remote-lock
 	@cd "$(work_dir)" \
 	  && echo "Formatting:" \
 	  && terraform fmt \
@@ -93,7 +87,7 @@ refresh: check-remote-state check-remote-lock
 	@cd "$(work_dir)" \
 	  && terraform apply -refresh-only
 
-apply: check-remote-state check-remote-lock
+apply: # check-remote-state check-remote-lock
 	@cd "$(work_dir)" \
 	  && echo "Formatting:" \
 	  && terraform fmt \
