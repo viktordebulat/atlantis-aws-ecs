@@ -28,7 +28,7 @@ help:
 	  && echo "---" \
 	  && echo "You may use 'resource' option to limit operations (if supported by Terraform). Example: 'make destroy resource=aws_vpc.default'"
 
-init: check-remote-state check-remote-lock
+init:
 	@cd "$(work_dir)" \
 	  && echo "Formatting:" \
 	  && terraform fmt \
