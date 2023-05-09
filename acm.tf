@@ -12,7 +12,7 @@ resource "aws_acm_certificate" "new_certificate" {
 
 data "aws_acm_certificate" "new_certificate" {
   count       = aws_acm_certificate.new_certificate[0].arn > 0 ? 1 : 0
-  domain_name = "atlantis.${var.project.domain}"
+  domain      = "atlantis.${var.project.domain}"
   statuses    = ["ISSUED"]
   most_recent = true
 }

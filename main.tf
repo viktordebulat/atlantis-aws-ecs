@@ -30,7 +30,7 @@ data "aws_elb_service_account" "current" {}
 data "aws_vpc" "primary_vpc" {
   filter {
     name   = "tag:${var.vpc.tag_name}"
-    values = [ var.vpc.tag_value ]
+    values = [var.vpc.tag_value]
   }
 }
 
@@ -38,10 +38,10 @@ data "aws_vpc" "primary_vpc" {
 data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
-    values = [ data.aws_vpc.primary_vpc.id ]
+    values = [data.aws_vpc.primary_vpc.id]
   }
   tags = {
-    var.public_subnets.tag_name = var.public_subnets.tag_value
+    "${var.public_subnets.tag_name}" = var.public_subnets.tag_value
   }
 }
 
@@ -49,10 +49,10 @@ data "aws_subnets" "public" {
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [ data.aws_vpc.primary_vpc.id ]
+    values = [data.aws_vpc.primary_vpc.id]
   }
   tags = {
-    var.private_subnets.tag_name = var.private_subnets.tag_value
+    "${var.private_subnets.tag_name}" = var.private_subnets.tag_value
   }
 }
 
@@ -69,7 +69,7 @@ data "aws_ec2_managed_prefix_list" "this" {
 
   filter {
     name   = "prefix-list-name"
-    values = [ var.prefix_name ]
+    values = [var.prefix_name]
   }
 }
 
