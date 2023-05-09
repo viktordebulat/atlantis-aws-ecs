@@ -1,0 +1,66 @@
+---
+
+image:
+  name: hashicorp/terraform:1.3.7
+  entrypoint:
+  - "/usr/bin/env"
+  - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Use customizing runner capacity in case using Fargate runner
+variables:
+  KUBERNETES_CPU_REQUEST: "0.25"
+  KUBERNETES_MEMORY_REQUEST: "200Mi"
+
+stages:
+- lint
+- check
+
+# Provides the Terraform version and reconfigures the backend state during init
+# Note: The leading dot (.) ignores this as a "job"
+# while the ampersand (&) is an Anchor declaring the script as a variable to use elsewhere
+.terraform-ver-init: &terraform-ver-init
+- terraform version
+- terraform init -backend-config="access_key=${AWS_ACCESS_KEY_ID} secret_key=${AWS_SECRET_ACCESS_KEY}"
+
+terraform-fmt-validate:
+  stage: lint
+  before_script:
+  - *terraform-ver-init
+  tags:
+  - nafs-k8s-runner
+  script:
+  # Job will fail with exit code 3 if formatting changes are required
+  - terraform fmt -list=true -write=false -diff=true -check=true -recursive
+  - terraform validate
+  only:
+  - merge_requests
+
+tflint:
+  stage: lint
+  image:
+    name: ghcr.io/terraform-linters/tflint
+  tags:
+  - nafs-k8s-runner
+  script:
+  # install plugins from .tflint.hcl file first
+  - tflint --init
+  - tflint --color
+  allow_failure: true
+  only:
+  - merge_requests
+
+checkov:
+  stage: check
+  image:
+    name: bridgecrew/checkov:latest
+    entrypoint:
+    - "/usr/bin/env"
+    - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  tags:
+  - nafs-k8s-runner
+  script:
+  # Show only failed checks, download ext modules
+  - checkov -d . --quiet --download-external-modules True
+  allow_failure: true
+  only:
+  - merge_requests

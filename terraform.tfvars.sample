@@ -1,0 +1,62 @@
+################################################################################
+# Project
+################################################################################
+
+project = {
+  name   = "atlantis"
+  domain = "example.com"
+}
+
+default_tags = {
+  Name         = "Atlantis"
+  Budget_Group = "Infrastructure"
+  Terraform    = "True"
+}
+
+################################################################################
+# AWS Basic
+################################################################################
+
+aws_region = "us-east-1"
+
+################################################################################
+# AWS VPC
+################################################################################
+
+vpc = {
+  tag_name  = "Name"
+  tag_value = "primary"
+}
+
+public_subnets = {
+  tag_name  = "Name"
+  tag_value = "public"
+}
+
+private_subnets = {
+  tag_name  = "Name"
+  tag_value = "private"
+}
+
+sg_names    = ""
+prefix_name = ""
+
+################################################################################
+# AWS IAM
+################################################################################
+
+iam_role_boundary = ""
+iam_policies_arn  = [ "arn:aws:iam::aws:policy/AdministratorAccess" ]
+
+################################################################################
+# Gitlab
+################################################################################
+
+gitlab = {
+  hostname   = "git.company.com"
+  user       = "username"
+  repo_names = [ "group/my-repo", "group2/also-mine" ]
+}
+
+# This is bad, use at least env variables instead of this
+gitlab_user_token = ""
