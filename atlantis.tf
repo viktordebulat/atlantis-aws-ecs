@@ -55,7 +55,7 @@ module "atlantis" {
   route53_record_name = "atlantis.${data.aws_route53_zone.this.name}"
 
   # ACM certificate
-  certificate_arn = length(data.aws_acm_certificate.existing_certificate.arn) > 0 ? data.aws_acm_certificate.existing_certificate.arn : data.aws_acm_certificate.new_certificate[0].arn
+  certificate_arn = var.create_acm_cert ? "" : data.aws_acm_certificate.existing_certificate[0].arn
 
   # Trusted roles
   trusted_principals = ["ssm.amazonaws.com"]
@@ -67,7 +67,7 @@ module "atlantis" {
 
   # ALB
   # Use managed prefixes to access ALB if exist
-  alb_ingress_cidr_blocks = length(data.aws_ec2_managed_prefix_list.this[0].entries) > 0 ? [for v in data.aws_ec2_managed_prefix_list.this[0].entries : v.cidr] : []
+  alb_ingress_cidr_blocks = length(data.aws_ec2_managed_prefix_list.this[*]) > 0 ? [for v in data.aws_ec2_managed_prefix_list.this[0].entries : v.cidr] : []
 
   alb_ingress_ipv6_cidr_blocks = []
 
